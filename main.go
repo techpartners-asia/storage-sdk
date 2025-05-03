@@ -1,4 +1,4 @@
-package main
+package storageSdk
 
 import (
 	"context"
