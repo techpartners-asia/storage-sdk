@@ -63,14 +63,15 @@ func (s *minioService) UploadFile(bucketName string, file *multipart.FileHeader)
 
 	types := file.Header["Content-Type"]
 
-	if _, err = s.minioClient.PutObject(context.Background(), bucketName, file.Filename, openFile, file.Size, minio.PutObjectOptions{
+	info, err := s.minioClient.PutObject(context.Background(), bucketName, file.Filename, openFile, file.Size, minio.PutObjectOptions{
 		ContentType:  types[0],
 		CacheControl: "max-age=31536000, immutable",
-	}); err != nil {
+	})
+	if err != nil {
 		return "", err
 	}
 
-	return file.Filename, nil
+	return bucketName + "/" + info.Key, nil
 }
 
 func (s *minioService) IsBucketExists(bucketName string) (bool, error) {
