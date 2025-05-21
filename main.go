@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"mime/multipart"
+	"path/filepath"
+	"time"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -63,7 +65,9 @@ func (s *minioService) UploadFile(bucketName string, file *multipart.FileHeader)
 
 	types := file.Header["Content-Type"]
 
-	info, err := s.minioClient.PutObject(context.Background(), bucketName, file.Filename, openFile, file.Size, minio.PutObjectOptions{
+	fileName := time.Now().Format("20060102150405") + "-" + filepath.Ext(file.Filename)
+
+	info, err := s.minioClient.PutObject(context.Background(), bucketName, fileName, openFile, file.Size, minio.PutObjectOptions{
 		ContentType:  types[0],
 		CacheControl: "max-age=31536000, immutable",
 	})
