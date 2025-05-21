@@ -65,7 +65,7 @@ func (s *minioService) UploadFile(bucketName string, file *multipart.FileHeader)
 
 	types := file.Header["Content-Type"]
 
-	fileName := time.Now().Format("20060102150405") + "-" + filepath.Ext(file.Filename)
+	fileName := time.Now().Format(time.UnixDate) + "-" + file.Filename + "-" + filepath.Ext(file.Filename)
 
 	info, err := s.minioClient.PutObject(context.Background(), bucketName, fileName, openFile, file.Size, minio.PutObjectOptions{
 		ContentType:  types[0],
