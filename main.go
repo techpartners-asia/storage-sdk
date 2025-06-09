@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
@@ -65,7 +66,9 @@ func (s *minioService) UploadFile(bucketName string, file *multipart.FileHeader)
 
 	types := file.Header["Content-Type"]
 
-	fileName := time.Now().Format(time.UnixDate) + "-" + file.Filename + "-" + filepath.Ext(file.Filename)
+	dt := uuid.New().String()
+
+	fileName := time.Now().Format("20060102150405") + "-" + dt + "-" + filepath.Ext(file.Filename)
 
 	info, err := s.minioClient.PutObject(context.Background(), bucketName, fileName, openFile, file.Size, minio.PutObjectOptions{
 		ContentType:  types[0],
